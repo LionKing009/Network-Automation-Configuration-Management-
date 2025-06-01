@@ -1,0 +1,20 @@
+- name: Ping devices and print success/failure
+  hosts: routers:switches
+  connection: ansible.netcommon.network_cli
+  gather_facts: no
+
+  tasks:
+    - name: Ping 10.200.0.254
+      ios_command:
+        commands:
+          - ping 10.200.0.254
+      register: ping_output
+
+    - name: Show ping result
+      debug:
+        msg: >-
+          {% if 'Success rate is 100 percent' in ping_output.stdout[0] or '!' in ping_output.stdout[0] %}
+            ✅ {{ device_hostname }}: PING STATUS SUCCESSFUL
+          {% else %}
+            ❌ {{ device_hostname }}: PING STATUS FAILED
+          {% endif %}

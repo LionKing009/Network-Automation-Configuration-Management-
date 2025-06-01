@@ -1,0 +1,20 @@
+---
+- name: Create a new VLAN and assign it to a port
+  hosts: switches
+  connection: ansible.netcommon.network_cli
+  gather_facts: no  # Set to no because we are using ios_facts module
+
+  tasks:
+    - name: Create VLAN 75
+      ios_config:
+        lines:
+          - name Administration
+        parents: vlan 75
+
+    - name: Assign the vlan to Gi3/3 
+      ios_config:
+        lines:
+          - switchport mode access
+          - switchport access vlan 75
+        parents: interface GigabitEthernet3/1
+
